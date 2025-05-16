@@ -1,17 +1,17 @@
 package org.Webbee;
 
 import org.Webbee.model.Transaction;
+import org.Webbee.model.User;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 public class LogWriter {
@@ -25,7 +25,7 @@ public class LogWriter {
      * @throws RuntimeException если не удалось создать файл
      * @throws IllegalArgumentException если путь пустой или null
      */
-    public static void initializeLogFile(String destinationPath) {
+    public static void initialize(String destinationPath) {
         if (destinationPath == null || destinationPath.isBlank()) {
             throw new IllegalArgumentException("Destination path cannot be null or empty");
         }
@@ -39,6 +39,15 @@ public class LogWriter {
         } catch (IOException e) {
             throw new RuntimeException("Failed to initialize log file at " + destination, e);
         }
+    }
+    public static void writeUsers(Map<String, User> users){
+        users.forEach((key, value) -> {
+            try {
+                LogWriter.writeUserLogs((key + ".log"), value.getTransactionLogs(), value.getBalance());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public static void writeUserLogs(String outputPathStr, Set<Transaction> logs, BigDecimal finalBalance) throws IOException {

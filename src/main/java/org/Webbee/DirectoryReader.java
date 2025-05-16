@@ -5,19 +5,31 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-public class DirectoryReader {
+public class DirectoryReader implements AutoCloseable {
     private final Path path;
+    private Stream<Path> fileStream;
+
     DirectoryReader(String path ) throws RuntimeException {
-        Path directory = Paths.get(path).toAbsolutePath();
-        if (!Files.isDirectory(directory)) {
-            throw  new RuntimeException("Error: " + directory + " is not a directory");
+        this.path = Paths.get(path).toAbsolutePath();
+        if (!Files.isDirectory(this.path)) {
+            throw  new RuntimeException("Error: " + this.path + " is not a directory");
         }
-        this.path = Paths.get(path);
     }
 
     public Stream<Path> getFileStream() throws IOException {
-        return Files.walk(this.path)
+        if (fileStream != null) {
+            fileStream.close();
+        }
+        fileStream = Files.walk(this.path)
                 .filter(Files::isRegularFile)
                 .filter(p -> p.toString().endsWith(".log"));
+        return fileStream;
     }
+    @Override
+    public void close() {
+        if (fileStream != null) {
+            fileStream.close();
+        }
+    }
+
 }

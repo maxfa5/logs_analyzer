@@ -17,7 +17,6 @@ public class Transaction implements Comparable<Transaction> {
     private final String recipient;
     private final LocalDateTime timestamp;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final BigDecimal ZERO = BigDecimal.ZERO;
 
     // Конструктор для BALANCE_INQUIRY и WITHDREW
     public Transaction(OperationType operationType, LocalDateTime timestamp,String sender, BigDecimal amount) throws IllegalArgumentException {
@@ -26,7 +25,7 @@ public class Transaction implements Comparable<Transaction> {
 
     // Конструктор для TRANSFERRED
     public Transaction(OperationType operationType,LocalDateTime timestamp,String sender, BigDecimal amount, String recipient) throws IllegalArgumentException {
-        if (amount == null || amount.compareTo(ZERO) <= 0) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be positive");
         }
 
@@ -41,14 +40,6 @@ public class Transaction implements Comparable<Transaction> {
         this.timestamp = timestamp;
     }
 
-    // Вспомогательные конструкторы для удобства
-    public Transaction(OperationType operationType, LocalDateTime timestamp, String sender, String amount) {
-        this(operationType,timestamp, sender,new BigDecimal(amount));
-    }
-
-    public Transaction(OperationType operationType,LocalDateTime timestamp, String sender, String amount, String recipient) {
-        this(operationType,timestamp, sender,new BigDecimal(amount), recipient);
-    }
 
     public OperationType getOperationType() {
         return operationType;

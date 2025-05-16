@@ -3,9 +3,7 @@ package org.Webbee;
 import org.Webbee.model.Transaction;
 import org.Webbee.model.User;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -93,7 +91,4 @@ public class UserLogsAggregator {
     public Map<String, User> getUsers() {
         return Collections.unmodifiableMap(users);
     }
-
-
-
 }

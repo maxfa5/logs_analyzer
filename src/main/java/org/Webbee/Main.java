@@ -2,38 +2,33 @@ package org.Webbee;
 
 import static java.lang.System.exit;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.Files;
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
 public class Main {
+    private static final String TRANSACTIONS_DIR_NAME = "transactions_by_users";
+    private static final int ERROR_EXIT_CODE = 1;
+
     public static void main(String[] args) {
+        validateArguments(args);
+        try {
+            LogWriter.initialize(TRANSACTIONS_DIR_NAME);
+            UserLogsAggregator aggregator = new UserLogsAggregator();
+            try (DirectoryReader reader = new DirectoryReader(args[0])){
+                aggregator.agregateFromFileStream(reader.getFileStream());
+            } catch (Exception e) {
+                System.err.println("Error processing directory: " + e.getMessage());
+                System.exit(ERROR_EXIT_CODE);
+            }
+            LogWriter.writeUsers(aggregator.getUsers());
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            System.exit(ERROR_EXIT_CODE);
+        }
+    }
+
+    private static void validateArguments(String[] args) {
         if (args.length < 1) {
             System.out.println("Отсутствует путь к директории.");
-            exit(1);
+            exit(ERROR_EXIT_CODE);
         }
-
-        DirectoryReader reader = new DirectoryReader(args[0]);
-        LogWriter.initializeLogFile("transactions_by_users");
-        UserLogsAggregator agreagtor = new UserLogsAggregator();
-        try {
-            agreagtor.agregateFromFileStream(reader.getFileStream());
-        } catch (Exception e) {
-            System.err.println("Error processing directory: " + e.getMessage());
-            System.exit(3);
-        }
-
-        agreagtor.getUsers().forEach((key, value) -> {
-            try {
-                LogWriter.writeUserLogs((key.toString() + ".log"), value.getTransactionLogs(), value.getBalance());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-
-
     }
 }
