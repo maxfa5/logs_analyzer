@@ -2,6 +2,9 @@ package org.Webbee;
 
 import org.Webbee.exceptions.DirectoryProcessingException;
 import org.Webbee.exceptions.InitializationException;
+import org.Webbee.services.DirectoryReader;
+import org.Webbee.services.LogWriter;
+import org.Webbee.services.UserLogsAggregator;
 
 import static java.lang.System.exit;
 

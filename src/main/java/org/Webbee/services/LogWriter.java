@@ -1,4 +1,4 @@
-package org.Webbee;
+package org.Webbee.services;
 
 import org.Webbee.exceptions.InitializationException;
 import org.Webbee.model.Transaction;

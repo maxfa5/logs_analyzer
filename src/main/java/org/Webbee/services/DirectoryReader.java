@@ -1,4 +1,4 @@
-package org.Webbee;
+package org.Webbee.services;
 import org.Webbee.exceptions.DirectoryProcessingException;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class DirectoryReader implements AutoCloseable {
      * @throws DirectoryProcessingException если путь не существует или не является директорией
      * @throws IllegalArgumentException если path равен null
      */
-    DirectoryReader(String path ) throws DirectoryProcessingException {
+    public DirectoryReader(String path ) throws DirectoryProcessingException {
         if (path == null) {
             throw new IllegalArgumentException("Path cannot be null");
         }

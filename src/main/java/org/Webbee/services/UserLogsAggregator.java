@@ -1,4 +1,4 @@
-package org.Webbee;
+package org.Webbee.services;
 
 import org.Webbee.model.Transaction;
 import org.Webbee.model.User;
