@@ -1,4 +1,6 @@
 package org.Webbee;
+import org.Webbee.exceptions.DirectoryProcessingException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,16 +19,16 @@ public class DirectoryReader implements AutoCloseable {
      * Создает новый экземпляр для чтения файлов из указанной директории.
      *
      * @param path путь к директории с лог-файлами
-     * @throws RuntimeException если путь не существует или не является директорией
+     * @throws DirectoryProcessingException если путь не существует или не является директорией
      * @throws IllegalArgumentException если path равен null
      */
-    DirectoryReader(String path ) throws RuntimeException {
+    DirectoryReader(String path ) throws DirectoryProcessingException {
         if (path == null) {
             throw new IllegalArgumentException("Path cannot be null");
         }
         this.path = Paths.get(path).toAbsolutePath();
         if (!Files.isDirectory(this.path)) {
-            throw  new RuntimeException("Error: " + this.path + " is not a directory");
+            throw new DirectoryProcessingException("Error: " + this.path + " is not a directory");
         }
     }
 

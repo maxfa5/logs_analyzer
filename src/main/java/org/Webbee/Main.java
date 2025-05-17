@@ -1,5 +1,8 @@
 package org.Webbee;
 
+import org.Webbee.exceptions.DirectoryProcessingException;
+import org.Webbee.exceptions.InitializationException;
+
 import static java.lang.System.exit;
 
 
@@ -10,21 +13,33 @@ public class Main {
     public static void main(String[] args) {
         validateArguments(args);
         try {
-            LogWriter.initialize(TRANSACTIONS_DIR_NAME);
-            UserLogsAggregator aggregator = new UserLogsAggregator();
-            try (DirectoryReader reader = new DirectoryReader(args[0])){
-                aggregator.agregateFromFileStream(reader.getFileStream());
-            } catch (Exception e) {
-                System.err.println("Error processing directory: " + e.getMessage());
-                System.exit(ERROR_EXIT_CODE);
-            }
+            initializeLogWriter(args[0]);
+        } catch (InitializationException e) {
+            System.err.println("Initialization error: " + e.getMessage());
+            System.exit(ERROR_EXIT_CODE);
+        }
+
+        try (DirectoryReader reader = new DirectoryReader(args[0])) {
+            UserLogsAggregator aggregator = new UserLogsAggregator(reader.getFileStream());
             LogWriter.writeUsers(aggregator.getUsers());
+        }catch (DirectoryProcessingException e){
+            System.err.println("Error processing directory: " + e.getMessage());
+            System.exit(ERROR_EXIT_CODE);
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
             System.exit(ERROR_EXIT_CODE);
         }
+        System.out.println("Logs processed successfully");
+
     }
 
+    private static void initializeLogWriter(String path) throws InitializationException {
+        try {
+            LogWriter.initialize(TRANSACTIONS_DIR_NAME, path);
+        } catch (Exception e) {
+            throw new InitializationException("Failed to initialize LogWriter");
+        }
+    }
     private static void validateArguments(String[] args) {
         if (args.length < 1) {
             System.out.println("Отсутствует путь к директории.");

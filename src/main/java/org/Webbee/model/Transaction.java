@@ -48,7 +48,7 @@ public class Transaction implements Comparable<Transaction> {
             throw new IllegalArgumentException("Amount must be positive");
         }
 
-        if (operationType == OperationType.TRANSFERRED && (recipient == null || recipient.isBlank())) {
+        if (operationType == OperationType.TRANSFERRED && (recipient == null ||  recipient.trim().isEmpty())) {
             throw new IllegalArgumentException("Recipient is required for TRANSFERRED operation");
         }
 

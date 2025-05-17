@@ -18,7 +18,7 @@ public class User {
      * @throws IllegalArgumentException если имя null или пустое
      */
     public User(String name) {
-        if (name == null || name.isBlank()) {
+        if (name == null ||  name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty");
         }
         this.name = name;

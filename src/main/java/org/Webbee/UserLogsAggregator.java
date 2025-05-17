@@ -12,11 +12,12 @@ import java.util.stream.Stream;
 public class UserLogsAggregator {
     private final Map<String, User> users;
 
-    public UserLogsAggregator() {
+    public UserLogsAggregator(Stream<Path> paths) {
         this.users = new HashMap<String, User>();
+        aggregateFromFileStream(paths);
     }
 
-    void agregateFromFileStream(Stream<Path> paths){
+    private void aggregateFromFileStream(Stream<Path> paths){
         paths.forEach(path-> {
             try {
                 processFile(path);

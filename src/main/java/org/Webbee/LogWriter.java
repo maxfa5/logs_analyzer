@@ -1,5 +1,6 @@
 package org.Webbee;
 
+import org.Webbee.exceptions.InitializationException;
 import org.Webbee.model.Transaction;
 import org.Webbee.model.User;
 
@@ -23,20 +24,25 @@ public class LogWriter {
     /**
      * Инициализирует файл логов
      * @param destinationPath путь к файлу логов
-     * @throws RuntimeException если не удалось создать файл
-     * @throws IllegalArgumentException если путь пустой или null
+     * @param PathOfDir путь к директории в которой хранятся логи
+     * @throws InitializationException если путь пустой/null или если не удалось создать файл
      */
-    public static void initialize(String destinationPath) {
-        if (destinationPath == null || destinationPath.isBlank()) {
-            throw new IllegalArgumentException("Destination path cannot be null or empty");
+    public static void initialize(String destinationPath, String PathOfDir) throws InitializationException {
+        if (destinationPath == null || destinationPath.trim().isEmpty()) {
+            throw new InitializationException("Destination path cannot be null or empty");
         }
-        outputDirectory = Paths.get(destinationPath).toAbsolutePath();
+        if (PathOfDir == null || PathOfDir.trim().isEmpty()) {
+            throw new InitializationException("Path of directory cannot be null or empty");
+        }
+
+        Path directoryPath = Paths.get(PathOfDir).toAbsolutePath();
+        outputDirectory = directoryPath.resolve(destinationPath).toAbsolutePath();
         try {
             if (Files.notExists(outputDirectory)) {
                 Files.createDirectories(outputDirectory);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to initialize log file at " + outputDirectory, e);
+            throw new InitializationException("Failed to initialize log file at " + outputDirectory);
         }
     }
 
@@ -55,9 +61,9 @@ public class LogWriter {
         });
     }
     /**
-     * Записывает логи пользователя в файл
      * @param filename имя файла для записи
      * @param logs набор транзакций
+     * Записывает логи пользователя в файл
      * @param finalBalance итоговый баланс
      * @throws IOException если произошла ошибка записи
      * @throws IllegalStateException если директория не инициализирована

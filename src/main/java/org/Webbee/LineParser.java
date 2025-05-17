@@ -25,13 +25,16 @@ public class LineParser {
         String operation = matcher.group(3);
         BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(matcher.group(4)));
 
-        return switch (operation) {
-            case "balance inquiry" -> new Transaction(Transaction.OperationType.BALANCE_INQUIRY,timestamp, userId, amount);
-            case "transferred" ->
-                    new Transaction( Transaction.OperationType.TRANSFERRED, timestamp, userId, amount, matcher.group(5));
-            case "withdrew" -> new Transaction(Transaction.OperationType.WITHDREW, timestamp, userId, amount);
-            default -> null;
-        };
+        if ("balance inquiry".equals(operation)) {
+            return new Transaction(Transaction.OperationType.BALANCE_INQUIRY, timestamp, userId, amount);
+        } else if ("transferred".equals(operation)) {
+            return new Transaction(Transaction.OperationType.TRANSFERRED, timestamp, userId, amount, matcher.group(5));
+        } else if ("withdrew".equals(operation)) {
+            return new Transaction(Transaction.OperationType.WITHDREW, timestamp, userId, amount);
+        } else {
+            return null;
+        }
     }
+
 
 }
