@@ -18,8 +18,6 @@ mkdir -p out/classes
 
 javac  -d out/classes src/main/java/org/Webbee/Main.java src/main/java/org/Webbee/model/*.java src/main/java/org/Webbee/services/*.java src/main/java/org/Webbee/exceptions/*.java
 
-# Собираем JAR-файл
 jar cfe log_analyzer_app.jar org.Webbee.Main -C out/production/classes .
 
-# Запуск
 java -jar log_analyzer_app.jar logs
