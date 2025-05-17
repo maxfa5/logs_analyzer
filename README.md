@@ -12,7 +12,7 @@
     java -jar target/logs_analyzer-1.0-SNAPSHOT.jar <Путь до директории с логами>
 ```
 
-### 2. Ручная сборка
+### Ручная сборка
 ```bash
 mkdir -p out/classes
 
