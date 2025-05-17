@@ -15,10 +15,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class LogWriter {
-    private static Path  destination;
+    private static Path  outputDirectory;
     private static final SimpleDateFormat TIMESTAMP_FORMATTER =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private LogWriter() {}
+
     /**
      * Инициализирует файл логов
      * @param destinationPath путь к файлу логов
@@ -29,17 +30,21 @@ public class LogWriter {
         if (destinationPath == null || destinationPath.isBlank()) {
             throw new IllegalArgumentException("Destination path cannot be null or empty");
         }
-
-        destination = Paths.get(destinationPath).toAbsolutePath();
-
+        outputDirectory = Paths.get(destinationPath).toAbsolutePath();
         try {
-            if (Files.notExists(destination)) {
-                Files.createDirectories(destination);
+            if (Files.notExists(outputDirectory)) {
+                Files.createDirectories(outputDirectory);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to initialize log file at " + destination, e);
+            throw new RuntimeException("Failed to initialize log file at " + outputDirectory, e);
         }
     }
+
+    /**
+     * Записывает логи всех пользователей
+     * @param users Map пользователей для записи
+     * @throws RuntimeException если произошла ошибка записи
+     */
     public static void writeUsers(Map<String, User> users){
         users.forEach((key, value) -> {
             try {
@@ -49,9 +54,17 @@ public class LogWriter {
             }
         });
     }
-
-    public static void writeUserLogs(String outputPathStr, Set<Transaction> logs, BigDecimal finalBalance) throws IOException {
-        Path outputPath = destination.resolve(outputPathStr);
+    /**
+     * Записывает логи пользователя в файл
+     * @param filename имя файла для записи
+     * @param logs набор транзакций
+     * @param finalBalance итоговый баланс
+     * @throws IOException если произошла ошибка записи
+     * @throws IllegalStateException если директория не инициализирована
+     */
+    public static void writeUserLogs(String filename, Set<Transaction> logs, BigDecimal finalBalance) throws IOException {
+        Path outputPath = outputDirectory.resolve(filename);
+        String userName = filename.substring(0, filename.lastIndexOf('.'));
 
         try (BufferedWriter writer = Files.newBufferedWriter(outputPath)) {
             // Запись всех транзакций
@@ -59,7 +72,6 @@ public class LogWriter {
                 writer.write(log.toString());
                 writer.newLine();
             }
-            String userName = outputPathStr.substring(0, outputPathStr.lastIndexOf('.'));
 
             // Запись итогового баланса
             String timestamp = TIMESTAMP_FORMATTER.format(new Date());
