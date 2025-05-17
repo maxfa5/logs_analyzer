@@ -1,4 +1,4 @@
-#  application for processing and analyzing logs of transfers between users.
+#  Application for processing and analyzing logs of transfers between users.
 
 ## Требования:
 - Java 8 или новее
