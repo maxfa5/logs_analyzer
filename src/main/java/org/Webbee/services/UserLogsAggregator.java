@@ -9,14 +9,29 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Класс для агрегации и обработки логов транзакций пользователей.
+ * <p>
+ * Собирает данные из файлов логов, группирует их по пользователям
+ * и вычисляет итоговые балансы. Поддерживает операции:
+ */
 public class UserLogsAggregator {
     private final Map<String, User> users;
-
+    /**
+     * Создает агрегатор и сразу обрабатывает переданные файлы.
+     *
+     * @param paths поток путей к файлам с логами транзакций
+     * @throws RuntimeException если произошла ошибка чтения файлов
+     */
     public UserLogsAggregator(Stream<Path> paths) {
         this.users = new HashMap<String, User>();
         aggregateFromFileStream(paths);
     }
-
+    /**
+     * Обрабатывает поток файлов, извлекая транзакции.
+     *
+     * @param paths поток путей к файлам для обработки
+     */
     private void aggregateFromFileStream(Stream<Path> paths){
         paths.forEach(path-> {
             try {
@@ -28,7 +43,12 @@ public class UserLogsAggregator {
 
     }
 
-
+    /**
+     * Обрабатывает отдельный файл с логами.
+     *
+     * @param src путь к файлу для обработки
+     * @throws IOException если произошла ошибка чтения файла
+     */
     private void processFile(Path src)throws IOException {
         List<String> lines = Files.readAllLines(src);
         lines.stream()
@@ -36,8 +56,14 @@ public class UserLogsAggregator {
             .filter(Objects::nonNull)
             .forEach(this::processTransaction);
     }
-
-    private void processTransaction(Transaction transaction) {
+    /**
+     * Обрабатывает отдельную транзакцию.
+     *
+     * @param transaction транзакция для обработки
+     * @throws IllegalArgumentException если тип операции неизвестен
+     * @throws NullPointerException если транзакция равна null
+     */
+    private void processTransaction(Transaction transaction) throws IllegalArgumentException, NullPointerException {
         Objects.requireNonNull(transaction, "Transaction cannot be null");
 
         String senderId = transaction.getSender();
@@ -59,7 +85,12 @@ public class UserLogsAggregator {
                         transaction.getOperationType());
         }
     }
-
+    /**
+     * Обрабатывает операцию снятия средств.
+     *
+     * @param user пользователь, совершающий операцию
+     * @param transaction данные транзакции
+     */
     private void handleWithdrawal(User user, Transaction transaction) {
         try {
             user.withdraw(transaction.getAmount());
@@ -69,12 +100,22 @@ public class UserLogsAggregator {
                     ": " + e.getMessage());
         }
     }
-
+    /**
+     * Обрабатывает операцию проверки баланса.
+     *
+     * @param user пользователь, совершающий операцию
+     * @param transaction данные транзакции
+     */
     private void handleBalanceInquiry(User user, Transaction transaction) {
         user.balanceInquiry(transaction.getAmount());
         user.addTransaction(transaction);
     }
-
+    /**
+     * Обрабатывает операцию перевода средств.
+     *
+     * @param transaction данные транзакции
+     * @param sender пользователь-отправитель
+     */
     private void handleTransfer(Transaction transaction, User sender) {
         String recipientId = transaction.getRecipient();
 
@@ -89,6 +130,12 @@ public class UserLogsAggregator {
                     " to " + recipient.getName() + ": " + e.getMessage());
         }
     }
+    /**
+     * Возвращает неизменяемое отображение пользователей и их данных.
+     *
+     * @return неизменяемая Map, где ключ - имя пользователя,
+     *         значение - объект User с транзакциями и балансом
+     */
     public Map<String, User> getUsers() {
         return Collections.unmodifiableMap(users);
     }

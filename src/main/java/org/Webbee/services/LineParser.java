@@ -8,12 +8,37 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Парсер строк логов для преобразования в объекты Transaction.
+ * <p>
+ * Обрабатывает строки в формате: {@code [дата] пользователь операция сумма [получатель]}
+ * Поддерживаемые операции: balance inquiry, transferred, withdrew
+ */
 public class LineParser {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * Регулярное выражение для разбора строк логов.
+     * Группы:
+     * <ol>
+     *   <li>Дата и время</li>
+     *   <li>Идентификатор пользователя</li>
+     *   <li>Тип операции</li>
+     *   <li>Сумма</li>
+     *   <li>Получатель (опционально)</li>
+     * </ol>
+     */
     private static final Pattern LOG_PATTERN = Pattern.compile(
             "^\\[(.+?)] (.+?) (balance inquiry|transferred|withdrew) (\\d+\\.?\\d*) ?(?:to (.+))?$"
     );
 
+    /**
+     * Парсит строку лога в объект Transaction.
+     *
+     * @param line строка лога для парсинга
+     * @return объект Transaction или {@code null}, если строка не соответствует формату
+     * @throws IllegalArgumentException если строка содержит некорректные данные
+     */
     public static Transaction parseLine(String line) {
         Matcher matcher = LOG_PATTERN.matcher(line);
         if (!matcher.find()) {
