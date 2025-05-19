@@ -107,12 +107,13 @@ public class Transaction implements Comparable<Transaction> {
         return operationType == that.operationType &&
                 amount.compareTo(that.amount) == 0 &&
                 Objects.equals(recipient, that.recipient) &&
-                Objects.equals(timestamp, that.timestamp);
+                Objects.equals(timestamp, that.timestamp) &&
+                Objects.equals(sender, that.sender);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(operationType, amount, recipient, timestamp);
+        return Objects.hash(operationType, amount, recipient, timestamp, sender);
     }
     /**
      * Сравнение транзакций по времени (для сортировки).

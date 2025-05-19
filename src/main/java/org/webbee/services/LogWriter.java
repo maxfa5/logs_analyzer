@@ -85,7 +85,7 @@ public class LogWriter {
 
             // Запись итогового баланса
             String timestamp = LocalDateTime.now().format(TIMESTAMP_FORMATTER);
-            String balanceEntry = String.format("[%s] %s final balance %.2f",
+            String balanceEntry = String.format("[%s] %s final balance %f",
                     timestamp, userName, finalBalance);
             writer.write(balanceEntry);
             writer.newLine();
