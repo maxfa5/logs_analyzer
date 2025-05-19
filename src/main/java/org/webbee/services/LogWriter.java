@@ -38,7 +38,7 @@ public class LogWriter {
         Path directoryPath = Paths.get(PathOfDir).toAbsolutePath();
         outputDirectory = directoryPath.resolve(destinationPath).toAbsolutePath();
         try {
-            if (Files.notExists(outputDirectory)) {
+            if (!Files.notExists(outputDirectory.getParent()) && Files.notExists(outputDirectory)) {
                 Files.createDirectories(outputDirectory);
             }
         } catch (IOException e) {

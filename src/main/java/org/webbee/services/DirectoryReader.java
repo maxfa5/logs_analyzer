@@ -27,6 +27,10 @@ public class DirectoryReader implements AutoCloseable {
             throw new IllegalArgumentException("Path cannot be null");
         }
         this.path = Paths.get(path).toAbsolutePath();
+        if (!Files.exists(this.path)) {
+            throw new DirectoryProcessingException("Directory does not exist: " + this.path);
+        }
+
         if (!Files.isDirectory(this.path)) {
             throw new DirectoryProcessingException("Error: " + this.path + " is not a directory");
         }
