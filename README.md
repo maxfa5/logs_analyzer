@@ -18,7 +18,7 @@ mkdir -p out/classes
 
 javac  -d out/classes src/main/java/org/webbee/Main.java src/main/java/org/webbee/model/*.java src/main/java/org/webbee/services/*.java src/main/java/org/webbee/exceptions/*.java
 
-jar cfe log_analyzer_app.jar org.webbee.Main -C out/production/classes .
+jar cfe log_analyzer_app.jar org.webbee.Main -C out/classes .
 
 java -jar log_analyzer_app.jar logs
 ```
