@@ -37,7 +37,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.Webbee.Main</mainClass> <!-- Исправленный путь -->
+                            <mainClass>org.webbee.Main</mainClass> <!-- Исправленный путь -->
                         </manifest>
                     </archive>
                 </configuration>
