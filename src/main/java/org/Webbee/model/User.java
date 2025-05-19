@@ -1,4 +1,4 @@
-package org.Webbee.model;
+package org.webbee.model;
 
 import java.math.BigDecimal;
 import java.util.Collections;

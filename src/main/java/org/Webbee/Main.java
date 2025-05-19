@@ -1,4 +1,4 @@
-package org.Webbee;
+package org.webbee;
 
 import org.Webbee.exceptions.DirectoryProcessingException;
 import org.Webbee.exceptions.InitializationException;

@@ -1,4 +1,4 @@
-package org.Webbee.services;
+package org.webbee.services;
 
 import org.Webbee.model.Transaction;
 
@@ -48,7 +48,7 @@ public class LineParser {
         LocalDateTime timestamp = LocalDateTime.parse(matcher.group(1), DATE_FORMATTER);
         String userId = matcher.group(2);
         String operation = matcher.group(3);
-        BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(matcher.group(4)));
+        BigDecimal amount = new BigDecimal(matcher.group(4));
 
         if ("balance inquiry".equals(operation)) {
             return new Transaction(Transaction.OperationType.BALANCE_INQUIRY, timestamp, userId, amount);
