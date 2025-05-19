@@ -8,11 +8,30 @@ import org.webbee.services.DirectoryReader;
 import org.webbee.services.LogWriter;
 import org.webbee.services.UserLogsAggregator;
 
-
+/**
+* Главный класс приложения для обработки логов транзакций.
+*
+ * <p>Обрабатывает логи из указанной директории и сохраняет результаты
+* в поддиректории {@value #TRANSACTIONS_DIR_NAME}.
+*
+* <p>Пример использования:
+* <pre>
+* java -jar app.jar /path/to/logs
+* </pre>
+*/
 public class Main {
+  /** Имя директории для сохранения обработанных логов. */
+  
   private static final String TRANSACTIONS_DIR_NAME = "transactions_by_users";
+  /** Код завершения при ошибке. */
   private static final int ERROR_EXIT_CODE = 1;
   
+  /**
+   * Точка входа в приложение.
+   *
+   * @param args аргументы командной строки:
+   *             args[0] - путь к директории с исходными логами
+   */
   public static void main(String[] args) {
     validateArguments(args);
     try {
