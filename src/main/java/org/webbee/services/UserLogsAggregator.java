@@ -50,9 +50,8 @@ public class UserLogsAggregator {
      * @throws IOException если произошла ошибка чтения файла
      */
     private void processFile(Path src)throws IOException {
-        List<String> lines = Files.readAllLines(src);
-        lines.stream()
-            .map(LineParser::parseLine)
+        Stream<String>lines = Files.lines(src);
+        lines.map(LineParser::parseLine)
             .filter(Objects::nonNull)
             .forEach(this::processTransaction);
     }
