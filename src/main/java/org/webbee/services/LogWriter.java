@@ -10,15 +10,19 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Класс для записи логов транзакций пользователей.
+ * Обеспечивает инициализацию директории логов и запись данных.
+ */
 public class LogWriter {
     private static Path  outputDirectory;
-    private static final SimpleDateFormat TIMESTAMP_FORMATTER =
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter TIMESTAMP_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private LogWriter() {}
 
     /**
@@ -80,7 +84,7 @@ public class LogWriter {
             }
 
             // Запись итогового баланса
-            String timestamp = TIMESTAMP_FORMATTER.format(new Date());
+            String timestamp = LocalDateTime.now().format(TIMESTAMP_FORMATTER);
             String balanceEntry = String.format("[%s] %s final balance %.2f",
                     timestamp, userName, finalBalance);
             writer.write(balanceEntry);
