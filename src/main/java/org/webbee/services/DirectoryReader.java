@@ -37,7 +37,7 @@ public class DirectoryReader implements AutoCloseable {
   }
   
   /**
-  * Возвращает Stream<Path> всех .log файлов в директории и поддиректориях.
+  * Возвращает StreamStream&lt;Path&gt; всех .log файлов в директории и поддиректориях.
   *
   * <p>Каждый вызов метода закрывает предыдущий поток (если был открыт).
   *

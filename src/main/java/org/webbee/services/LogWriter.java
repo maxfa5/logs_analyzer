@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.webbee.exceptions.InitializationException;
 import org.webbee.model.Transaction;
 import org.webbee.model.User;
@@ -54,23 +57,40 @@ public class LogWriter {
   }
   
   /**
-   * Записывает логи всех пользователей.
+   * Асинхронно записывает логи всех пользователей.
+   *
+   * <p>Использует пул потоков для параллельной записи файлов.
+   *
+   * <p>Каждый Future асинхронно обрабатывает запись логов для одного пользователя из Map.
    *
    * @param users Map пользователей для записи
    * @throws RuntimeException если произошла ошибка записи
    */
+  
   public static void writeUsers(Map<String, User> users) {
-    users.forEach((key, value) -> {
-      try {
-        LogWriter.writeUserLogs((key + ".log"), value.getTransactionLogs(), value.getBalance());
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    });
+    ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime()
+        .availableProcessors());
+    try {
+      CompletableFuture<?>[] futures = users.entrySet().parallelStream()
+          .map(entry -> CompletableFuture.runAsync(() -> {
+            try {
+              String filename = entry.getKey() + ".log";
+              LogWriter.writeUserLogs(filename, entry.getValue().getTransactionLogs(),
+                  entry.getValue().getBalance());
+            } catch (IOException e) {
+              throw new RuntimeException("Failed to write logs for user " + entry.getKey(), e);
+            }
+          }, executor))
+          .toArray(CompletableFuture[]::new);
+      
+      CompletableFuture.allOf(futures).join();
+    } finally {
+      executor.shutdown();
+    }
   }
   
   /**
-   *  Запись логов для 1 пользователя.
+   * Запись логов для 1 пользователя.
    *
    * @param filename     имя файла для записи
    * @param logs         набор транзакций
